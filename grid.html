@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Grid test</title>
+		<style>
+			main{
+				display: grid;
+				grid-gap: .5em;
+				grid-auto-rows: 1fr;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				grid-auto-flow: dense;
+			}
+			article{
+				padding: 1em;
+				background-color: orange;
+			}
+			.big{
+				grid-column: span 3;
+				grid-row: span 2;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<article>
+				<h1>A1</h1>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. At facilis quas culpa. Repellendus, totam itaque aliquam suscipit esse est doloribus perferendis eveniet libero dolorum molestias corrupti officiis, deserunt impedit aspernatur!</p>
+			</article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article class="big"><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article class="big"><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article class="big"><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+			<article><h1>A1</h1></article>
+		</main>
+	</body>
+</html>
