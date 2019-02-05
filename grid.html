@@ -16,36 +16,75 @@
 				padding: 1em;
 				background-color: orange;
 			}
-			.big{
-				grid-column: span 3;
-				grid-row: span 2;
+			@media screen and (max-width: 900px) {
+				article{
+					padding: .5em;
+					background-color: red;
+				}
+
+			}
+			@media screen and (max-width: 600px) {
+				article{
+					background-color: blue;
+				}
 			}
 		</style>
 	</head>
+
 	<body>
-		<main>
+		<h1>My restaurant</h1>
+		<main id="menu"></main>
+
+		<template>
 			<article>
-				<h1>A1</h1>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. At facilis quas culpa. Repellendus, totam itaque aliquam suscipit esse est doloribus perferendis eveniet libero dolorum molestias corrupti officiis, deserunt impedit aspernatur!</p>
+				<h1>NAME</h1>
+				<h2>PRICE</h2>
+				<p>DESCRIPTION</p>
 			</article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article class="big"><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article class="big"><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article class="big"><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-			<article><h1>A1</h1></article>
-		</main>
+		</template>
+
+		<script>
+			const template = document.querySelector("template"); //select the template
+			let clone = template.content.cloneNode(true); //make a clone of the template content
+
+			const main = document.querySelector("main"); //select a container element
+
+			//change content of clone elements
+			clone.querySelector("h1").textContent= "Russian Ringbread";
+			clone.querySelector("h2").textContent= "29,-";
+			clone.querySelector("p").textContent= "New descriptive text...";
+
+			main.appendChild(clone); //append the clone to the container element
+
+			clone = template.content.cloneNode(true); //make a new clone of the template content
+
+			//change content of 2nd clone elements
+			clone.querySelector("h1").textContent= "Caviar bruschetta";
+			clone.querySelector("h2").textContent= "49,-";
+			clone.querySelector("p").textContent= "2nd new descriptive text...";
+
+			main.appendChild(clone); //append the 2nd clone to the container element
+		</script>
 	</body>
+
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

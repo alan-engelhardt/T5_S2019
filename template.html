@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>template test</title>
+		<style>
+			img{
+				width: 100%;
+			}
+			main{
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				grid-gap: 1em;
+			}
+			article{
+				padding: 1em;
+				border: 1px solid;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>My site</h1>
+		<main></main>
+
+		<template id="myTemp">
+			<article>
+				<h1>NAME</h1>
+				<h2>PRICE</h2>
+				<img src="IMG" alt="IMG">
+			</article>
+		</template>
+		<script>
+			const template = document.querySelector("#myTemp").content;
+			const main = document.querySelector("main");
+
+			for(let i = 0; i<10; i++){
+				let clone = template.cloneNode(true);
+				clone.querySelector("h1").textContent="Name of meal";
+				clone.querySelector("h2").textContent=i+ ",- kr.";
+				clone.querySelector("img").src="images/Screenshot.png";
+				main.appendChild(clone);
+			}
+		</script>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
