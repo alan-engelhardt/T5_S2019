@@ -39,7 +39,8 @@
 				let clone = template.cloneNode(true);
 				clone.querySelector("h1").textContent="Name of meal";
 				clone.querySelector("h2").textContent=i+ ",- kr.";
-				clone.querySelector("img").src="images/Screenshot.png";
+				clone.querySelector("img").src="images/"+i+".png";
+				clone.querySelector("img").alt="image "+i;
 				main.appendChild(clone);
 			}
 		</script>
