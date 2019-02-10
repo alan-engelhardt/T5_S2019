@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>template test</title>
+		<style>
+			main img{
+				width: 100%;
+			}
+			main{
+				max-width: 1000px;
+				margin: auto;
+			}
+			section{
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				grid-gap: 1em;
+			}
+			article{
+				padding: 1em;
+				border: 1px solid;
+			}
+			#modalbg{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				background-color: rgba(0,0,0,.8);
+				display: grid;
+				grid-auto-rows: 1fr;
+			}
+			#modal{
+				background-color: white;
+				width: 80%;
+				height: 80vh;
+				margin: auto;
+				padding: 1em;
+			}
+			#modal img{
+				float: right;
+				margin: 1em;
+			}
+			#modalbg.hide{
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>My site</h1>
+		<main>
+			<h2>Starters</h2>
+			<section id="starter-section"></section>
+			<h2>Main</h2>
+			<section id="main-section"></section>
+		</main>
+
+		<div id="modalbg" class="hide">
+			<article id="modal">
+				<img>
+				<h1>NAME</h1>
+				<p>DESCR</p>
+			</article>
+		</div>
+
+		<template id="myTemp">
+			<article>
+				<h1>NAME</h1>
+				<h2>PRICE</h2>
+				<img src="IMG" alt="IMG">
+				<button>More</button>
+			</article>
+		</template>
+
+		<script>
+			const template = document.querySelector("#myTemp").content;
+			const main = document.querySelector("main");
+			const modalbg = document.querySelector("#modalbg");
+			const modal = document.querySelector("#modal");
+			const starterSection = document.querySelector("#starter-section");
+			const mainSection = document.querySelector("#main-section");
+			const plistLink = "http://kea-alt-del.dk/t5/api/productlist";
+			const pLink = "http://kea-alt-del.dk/t5/api/product?id=";
+			const imgLink = "https://kea-alt-del.dk/t5/site/imgs/";
+
+			fetch(plistLink).then(e=>e.json()).then(data=>data.forEach(showData));
+
+			function showData(oneObject){
+				console.log(oneObject.category);
+				let clone = template.cloneNode(true);
+				clone.querySelector("h1").textContent=oneObject.name;
+				clone.querySelector("h2").textContent=oneObject.price;
+				clone.querySelector("img").src="https://kea-alt-del.dk/t5/site/imgs/small/" + oneObject.image + "-sm.jpg";
+				clone.querySelector("img").alt=oneObject.image;
+
+				clone.querySelector("button").addEventListener("click", ()=>{
+					fetch(pLink+oneObject.id).then(e=>e.json()).then(data=>showDetails(data));
+				})
+
+				if(oneObject.category == "starter"){
+					starterSection.appendChild(clone);
+				}
+				if(oneObject.category == "main"){
+					mainSection.appendChild(clone);
+				}
+			}
+
+			modal.addEventListener("click", ()=>modalbg.classList.add("hide"));
+
+			function showDetails(product){
+				console.log(product);
+				modalbg.classList.remove("hide")
+				modal.querySelector("img").src="https://kea-alt-del.dk/t5/site/imgs/medium/" + product.image + "-md.jpg";
+				modal.querySelector("h1").textContent=product.name;
+				modal.querySelector("p").textContent=product.longdescription;
+			}
+		</script>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
