@@ -9,6 +9,10 @@
 				width: 100%;
 			}
 			main{
+				max-width: 1000px;
+				margin: auto;
+			}
+			section{
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 				grid-gap: 1em;
@@ -22,7 +26,12 @@
 
 	<body>
 		<h1>My site</h1>
-		<main></main>
+		<main>
+			<h2>Starters</h2>
+			<section id="starter-section"></section>
+			<h2>Main</h2>
+			<section id="main-section"></section>
+		</main>
 
 		<template id="myTemp">
 			<article>
@@ -34,15 +43,28 @@
 		<script>
 			const template = document.querySelector("#myTemp").content;
 			const main = document.querySelector("main");
+			const starterSection = document.querySelector("#starter-section");
+			const mainSection = document.querySelector("#main-section");
+			const productlistLink = "http://kea-alt-del.dk/t5/api/productlist";
+			const imgLink = "https://kea-alt-del.dk/t5/site/imgs/";
 
-			for(let i = 0; i<10; i++){
+			fetch(productlistLink).then(e=>e.json()).then(data=>data.forEach(showData));
+
+			function showData(oneObject){
+				console.log(oneObject.category);
 				let clone = template.cloneNode(true);
-				clone.querySelector("h1").textContent="Name of meal "+i;
-				clone.querySelector("h2").textContent=i*10+ ",- kr.";
-				clone.querySelector("img").src="images/"+i+".png";
-				clone.querySelector("img").alt="image "+i;
-				main.appendChild(clone);
+				clone.querySelector("h1").textContent=oneObject.name;
+				clone.querySelector("h2").textContent=oneObject.price;
+				clone.querySelector("img").src="https://kea-alt-del.dk/t5/site/imgs/small/" + oneObject.image + "-sm.jpg";
+				clone.querySelector("img").alt=oneObject.image;
+				if(oneObject.category == "starter"){
+					starterSection.appendChild(clone);
+				}
+				if(oneObject.category == "main"){
+					mainSection.appendChild(clone);
+				}
 			}
+
 		</script>
 	</body>
 </html>
