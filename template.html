@@ -12,7 +12,7 @@
 				max-width: 1000px;
 				margin: auto;
 			}
-			section{
+			main{
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 				grid-gap: 1em;
@@ -20,7 +20,18 @@
 			article{
 				padding: 1em;
 				border: 1px solid;
+        position:relative;
 			}
+      .soldout *:not(.overlay) {
+        opacity: 0.5;
+      }
+      .overlay {
+        position: absolute;
+        top:0;
+
+        right:0;
+
+      }
 		</style>
 	</head>
 
@@ -38,6 +49,7 @@
 				<h1>NAME</h1>
 				<h2>PRICE</h2>
 				<img src="IMG" alt="IMG">
+				<p class="vegetarian">This product is vegetarian</p>
 			</article>
 		</template>
 		<script>
@@ -51,18 +63,26 @@
 			fetch(productlistLink).then(e=>e.json()).then(data=>data.forEach(showData));
 
 			function showData(oneObject){
-				console.log(oneObject.category);
+				console.log(oneObject);
 				let clone = template.cloneNode(true);
 				clone.querySelector("h1").textContent=oneObject.name;
 				clone.querySelector("h2").textContent=oneObject.price;
 				clone.querySelector("img").src="https://kea-alt-del.dk/t5/site/imgs/small/" + oneObject.image + "-sm.jpg";
 				clone.querySelector("img").alt=oneObject.image;
-				if(oneObject.category == "starter"){
-					starterSection.appendChild(clone);
-				}
-				if(oneObject.category == "main"){
-					mainSection.appendChild(clone);
-				}
+        if(oneObject.vegetarian == false){
+          clone.querySelector(".vegetarian").remove()
+        }
+
+        if(oneObject.soldout){
+          const article = clone.querySelector("article");
+          article.classList.add("soldout");
+          const message = document.createElement("p");
+          message.textContent="Sold Out";
+          message.classList.add("overlay");
+          article.appendChild(message)
+        }
+
+				main.appendChild(clone);
 			}
 
 		</script>
