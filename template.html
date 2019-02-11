@@ -3,14 +3,22 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>template test</title>
+		<title>Petrograd</title>
+		<link href="https://fonts.googleapis.com/css?family=Russo+One" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
 		<style>
 			img{
 				width: 100%;
 			}
-			main{
+			body{
 				max-width: 1000px;
 				margin: auto;
+				background-color: #f2e4d7;
+				color: #29484b;
+			}
+			h1, h2, h3, h4, p, nav{
+				font-family: 'Russo One', sans-serif;
+				font-weight: normal;
 			}
 			main{
 				display: grid;
@@ -20,18 +28,18 @@
 			article{
 				padding: 1em;
 				border: 1px solid;
-        position:relative;
+				position:relative;
 			}
-      .soldout *:not(.overlay) {
-        opacity: 0.5;
-      }
-      .overlay {
-        position: absolute;
-        top:0;
+			.soldout *:not(.overlay) {
+				opacity: 0.5;
+			}
+			.overlay {
+				position: absolute;
+				top:0;
 
-        right:0;
+				right:0;
 
-      }
+			}
 		</style>
 	</head>
 
@@ -69,18 +77,18 @@
 				clone.querySelector("h2").textContent=oneObject.price;
 				clone.querySelector("img").src="https://kea-alt-del.dk/t5/site/imgs/small/" + oneObject.image + "-sm.jpg";
 				clone.querySelector("img").alt=oneObject.image;
-        if(oneObject.vegetarian == false){
-          clone.querySelector(".vegetarian").remove()
-        }
+				if(oneObject.vegetarian == false){
+					clone.querySelector(".vegetarian").remove()
+				}
 
-        if(oneObject.soldout){
-          const article = clone.querySelector("article");
-          article.classList.add("soldout");
-          const message = document.createElement("p");
-          message.textContent="Sold Out";
-          message.classList.add("overlay");
-          article.appendChild(message)
-        }
+				if(oneObject.soldout){
+					const article = clone.querySelector("article");
+					article.classList.add("soldout");
+					const message = document.createElement("p");
+					message.textContent="Sold Out";
+					message.classList.add("overlay");
+					article.appendChild(message)
+				}
 
 				main.appendChild(clone);
 			}

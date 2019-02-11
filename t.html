@@ -1,14 +1,37 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>template test</title>
+		<title>Petrograd</title>
+		<link href="https://fonts.googleapis.com/css?family=Russo+One" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
 		<style>
 			img{
 				width: 100%;
 			}
-			main{
+			body{
+				max-width: 1000px;
+				margin: auto;
+				background-color: #f2e4d7;
+				color: #29484b;
+			}
+			h1, h2, h3, h4, p, nav{
+				font-family: 'Russo One', sans-serif;
+				font-weight: normal;
+			}
+			nav a{
+				padding: 1em;
+				margin: 2px;
+				text-decoration: none;
+				color: white;
+			}
+			nav{
+				padding: 1em;
+				text-align: right;
+				background-color: rgba(0,0,0,.8);
+			}
+			section{
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 				grid-gap: 1em;
@@ -16,43 +39,97 @@
 			article{
 				padding: 1em;
 				border: 1px solid;
+				position:relative;
+			}
+			.soldout *:not(.overlay) {
+				opacity: 0.5;
+			}
+			.overlay {
+				position: absolute;
+				top:0;
+				right:0;
 			}
 		</style>
 	</head>
 
 	<body>
-		<h1>My students</h1>
+		<h1>My site</h1>
+		<nav></nav>
 		<main></main>
 
 		<template id="myTemp">
 			<article>
 				<h1>NAME</h1>
-				<h2>COUNTRY</h2>
+				<h2>PRICE</h2>
 				<img src="IMG" alt="IMG">
-				<ul class="hobbies"></ul>
+				<p class="vegetarian">This product is vegetarian</p>
 			</article>
 		</template>
 		<script>
 			const template = document.querySelector("#myTemp").content;
 			const main = document.querySelector("main");
+			const nav = document.querySelector("nav");
+			const productlistLink = "http://kea-alt-del.dk/t5/api/productlist";
+			const productLink = "http://kea-alt-del.dk/t5/api/product?id=";
+			const catLink = "http://kea-alt-del.dk/t5/api/categories";
+			const imgLink = "https://kea-alt-del.dk/t5/site/imgs/";
 
-			fetch("students.json").then(e=>e.json()).then(data=>data.forEach(show));
+			fetch(catLink).then(e=>e.json()).then(data=>createCats(data));
 
-			function show(data){
-				console.log(data)
-				let clone = template.cloneNode(true);
-				clone.querySelector("h1").textContent=data.name;
-				clone.querySelector("h2").textContent=data.county;
-				if(data.hobbies){
-					const ul = clone.querySelector("ul");
-					data.hobbies.forEach(hobby=>{
-						const li = document.createElement("li");
-						li.textContent=hobby;
-						ul.appendChild(li);
-					})
-				}
-				main.appendChild(clone);
+			function createCats(cats){
+				cats.forEach(category=>{
+					newS = document.createElement("section");
+					newH = document.createElement("h1");
+					newA = document.createElement("a");
+					newH.textContent=category;
+					newS.id=category;
+					main.appendChild(newH);
+					main.appendChild(newS);
+					newA.href="#";
+					newA.textContent=category;
+					newA.addEventListener("click", ()=>showCat(category));
+					nav.appendChild(newA);
+				})
+				fetch(productlistLink).then(e=>e.json()).then(data=>data.forEach(showData));
 			}
+
+			function showCat(category){
+				console.log(category)
+				document.querySelectorAll("section").forEach(section=>{
+					if(section.id==category){
+						section.style.display="grid";
+						section.previousElementSibling.style.display="block";
+					}else{
+						section.style.display="none";
+						section.previousElementSibling.style.display="none";
+					}
+
+				})
+			}
+
+			function showData(oneObject){
+				const parent = document.querySelector("#"+oneObject.category);
+				let clone = template.cloneNode(true);
+				clone.querySelector("h1").textContent=oneObject.name;
+				clone.querySelector("h2").textContent=oneObject.price;
+				clone.querySelector("img").src="https://kea-alt-del.dk/t5/site/imgs/small/" + oneObject.image + "-sm.jpg";
+				clone.querySelector("img").alt=oneObject.image;
+				if(oneObject.vegetarian == false){
+					clone.querySelector(".vegetarian").remove()
+				}
+
+				if(oneObject.soldout){
+					const article = clone.querySelector("article");
+					article.classList.add("soldout");
+					const message = document.createElement("p");
+					message.textContent="Sold Out";
+					message.classList.add("overlay");
+					article.appendChild(message)
+				}
+
+				parent.appendChild(clone);
+			}
+
 		</script>
 	</body>
 </html>
