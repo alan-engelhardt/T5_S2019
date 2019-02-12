@@ -3,14 +3,25 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>template test</title>
+		<title>Petrograd</title>
+		<link href="https://fonts.googleapis.com/css?family=Russo+One" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
 		<style>
-
-			main{
+			img{
+				width: 100%;
+			}
+			body{
 				max-width: 1000px;
 				margin: auto;
+				background-color: #f2e4d7;
+				color: #29484b;
 			}
-			main{
+			h1, h2, h3, h4, p, nav{
+				font-family: 'Russo One', sans-serif;
+				font-weight: normal;
+				text-transform: capitalize;
+			}
+			section{
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 				grid-gap: 1em;
@@ -18,69 +29,157 @@
 			article{
 				padding: 1em;
 				border: 1px solid;
-        position:relative;
+				position:relative;
 			}
-      .soldout *:not(.overlay) {
-        opacity: 0.5;
-      }
-      .overlay {
-        position: absolute;
-        top:0;
-
-        right:0;
-
-      }
+			.soldout *:not(.overlay) {
+				opacity: 0.5;
+			}
+			.overlay {
+				position: absolute;
+				top:0;
+				right:0;
+			}
+			nav a{
+				padding: 1em;
+				text-decoration: none;
+			}
+			button{
+				cursor: pointer;
+			}
+			.modal-bg{
+				position: fixed;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				background-color: rgba(0,0,0,.8);
+			}
+			.modal-content{
+				background-color: white;
+				width: 80%;
+				height: 80%;
+				margin: auto;
+				margin-top: 5%;
+			}
+			.hide{
+				display: none;
+			}
 		</style>
 	</head>
 
 	<body>
 		<h1>My site</h1>
-		<main>
-			<h2>Starters</h2>
-			<section id="starter-section"></section>
-			<h2>Main</h2>
-			<section id="main-section"></section>
-		</main>
+		<nav>
+			<a href="#" id="all">All</a>
+		</nav>
+		<main></main>
+
+		<div class="modal-bg hide">
+
+			<article class="modal-content">
+				<button>close</button>
+				<h1>NAME</h1>
+				<img>
+				<p>LONG DESCR.</p>
+			</article>
+		</div>
 
 		<template id="myTemp">
 			<article>
+				<img src="IMG" alt="IMG">
 				<h1>NAME</h1>
 				<h2>PRICE</h2>
-				<img src="IMG" alt="IMG">
 				<p class="vegetarian">This product is vegetarian</p>
+				<button>See more</button>
 			</article>
 		</template>
+
 		<script>
 			const template = document.querySelector("#myTemp").content;
 			const main = document.querySelector("main");
-			const starterSection = document.querySelector("#starter-section");
-			const mainSection = document.querySelector("#main-section");
+			const nav = document.querySelector("nav");
+
+			const modal = document.querySelector(".modal-bg");
+
+			modal.addEventListener("click", ()=>modal.classList.add("hide"));
+
 			const productlistLink = "http://kea-alt-del.dk/t5/api/productlist";
+			const catLink = "http://kea-alt-del.dk/t5/api/categories";
+
+			const productLink = "http://kea-alt-del.dk/t5/api/product?id=";
+
 			const imgLink = "https://kea-alt-del.dk/t5/site/imgs/";
 
-			fetch(productlistLink).then(e=>e.json()).then(data=>data.forEach(showData));
+			const allLink = document.querySelector("#all");
+			allLink.addEventListener("click", ()=>showCategory("all"));
 
-			function showData(oneObject){
-				console.log(oneObject);
+			fetch(catLink).then(e=>e.json()).then(data=>createCatSections(data));
+
+			function createCatSections(categories){
+				console.log(categories);
+				categories.forEach(cat=>{
+
+					const newA = document.createElement("a");
+					newA.textContent=cat;
+					newA.href="#";
+					newA.addEventListener("click", ()=>showCategory(cat));
+					nav.appendChild(newA);
+
+					const newSection = document.createElement("section");
+					const newHeader = document.createElement("h2");
+					newSection.id=cat;
+					newHeader.textContent=cat;
+					main.appendChild(newHeader);
+					main.appendChild(newSection);
+
+				})
+				fetch(productlistLink).then(e=>e.json()).then(data=>data.forEach(showData));
+			}
+
+			function showCategory(category){
+				console.log(category)
+				document.querySelectorAll("main section").forEach(section=>{
+					if(section.id == category || category == "all"){
+						section.style.display="grid";
+						section.previousElementSibling.style.display="block";
+					}else{
+						section.style.display="none";
+						section.previousElementSibling.style.display="none";
+					}
+				})
+			}
+
+			function showDetails(product){
+				console.log(product);
+				modal.querySelector("h1").textContent=product.name;
+				modal.classList.remove("hide");
+			}
+
+			function showData(product){
+				const section = document.querySelector("#"+product.category)
 				let clone = template.cloneNode(true);
-				clone.querySelector("h1").textContent=oneObject.name;
-				clone.querySelector("h2").textContent=oneObject.price;
-				clone.querySelector("img").src="https://kea-alt-del.dk/t5/site/imgs/small/" + oneObject.image + "-sm.jpg";
-				clone.querySelector("img").alt=oneObject.image;
-        if(oneObject.vegetarian == false){
-          clone.querySelector(".vegetarian").remove()
-        }
+				clone.querySelector("h1").textContent=product.name;
 
-        if(oneObject.soldout){
-          const article = clone.querySelector("article");
-          article.classList.add("soldout");
-          const message = document.createElement("p");
-          message.textContent="Sold Out";
-          message.classList.add("overlay");
-          article.appendChild(message)
-        }
+				clone.querySelector("button").addEventListener("click", ()=>{
+					fetch(productLink+product.id).then(e=>e.json()).then(data=>showDetails(data));
+				});
 
-				main.appendChild(clone);
+				clone.querySelector("h2").textContent=product.price;
+				clone.querySelector("img").src="https://kea-alt-del.dk/t5/site/imgs/small/" + product.image + "-sm.jpg";
+				clone.querySelector("img").alt=product.image;
+				if(product.vegetarian == false){
+					clone.querySelector(".vegetarian").remove()
+				}
+
+				if(product.soldout){
+					const article = clone.querySelector("article");
+					article.classList.add("soldout");
+					const message = document.createElement("p");
+					message.textContent="Sold Out";
+					message.classList.add("overlay");
+					article.appendChild(message)
+				}
+				section.appendChild(clone);
 			}
 
 		</script>
